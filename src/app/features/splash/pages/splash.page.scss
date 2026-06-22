@@ -1,0 +1,125 @@
+:host {
+  display: block;
+}
+
+.splash {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 2rem;
+  text-align: center;
+}
+
+.bloom {
+  position: relative;
+  width: 168px;
+  height: 168px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 1.25rem;
+
+  &__halo {
+    position: absolute;
+    inset: -10%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(139, 124, 246, 0.55) 0%, transparent 62%);
+    filter: blur(14px);
+    animation: halo-pulse 3.2s var(--tb-ease) infinite;
+  }
+
+  &__art {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-origin: 50% 50%;
+    animation: bloom-in 0.9s var(--tb-ease) both;
+  }
+
+  &__petals {
+    transform-origin: 60px 60px;
+    animation: petals-open 1s var(--tb-ease) both;
+  }
+
+  &__petal {
+    opacity: 0.92;
+  }
+
+  &__core {
+    fill: #0e1230;
+    stroke: rgba(255, 255, 255, 0.6);
+    stroke-width: 1.5;
+  }
+
+  &__check {
+    fill: none;
+    stroke: #5eead4;
+    stroke-width: 4.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 34;
+    stroke-dashoffset: 34;
+    animation: check-draw 0.5s var(--tb-ease) 0.85s forwards;
+  }
+}
+
+.splash__word {
+  margin: 0;
+  font-family: var(--tb-font-display);
+  font-weight: 800;
+  font-size: 2.4rem;
+  letter-spacing: -0.03em;
+  background: linear-gradient(100deg, #ffffff 0%, #d9d2ff 55%, #b9f3e9 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: tb-rise 0.6s var(--tb-ease) 0.35s both;
+}
+
+.splash__tag {
+  margin: 0;
+  color: var(--tb-text-muted);
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  animation: tb-rise 0.6s var(--tb-ease) 0.5s both;
+}
+
+@keyframes bloom-in {
+  from {
+    opacity: 0;
+    transform: scale(0.7) rotate(-12deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes petals-open {
+  from {
+    transform: scale(0.4);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes check-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes halo-pulse {
+  0%,
+  100% {
+    opacity: 0.7;
+    transform: scale(0.96);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+}

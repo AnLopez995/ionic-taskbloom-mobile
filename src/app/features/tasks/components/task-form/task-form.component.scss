@@ -1,0 +1,40 @@
+// The component sits inside an ion-modal, wrapping ion-header + ion-content.
+// The host must be a full-height flex column so ion-content can fill the modal
+// instead of collapsing and overlapping the header/fields.
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.title-field {
+  --background: var(--tb-glass-strong);
+  --color: var(--tb-text);
+  --placeholder-color: var(--tb-text-muted);
+  --placeholder-opacity: 0.9;
+  --padding-top: 15px;
+  --padding-bottom: 15px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  margin-bottom: 1.5rem;
+  min-height: 54px;
+  font-size: 1.05rem;
+  color: var(--tb-text);
+  background: var(--tb-glass-strong);
+  border: 1px solid var(--tb-glass-border);
+  border-radius: var(--tb-radius-sm);
+}
+
+.field-label {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--tb-text-muted);
+}
+
+.selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}

@@ -1,22 +1,41 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { IonContent } from '@ionic/angular/standalone';
 
+/** How long the splash lingers before handing off to the task list. */
+const SPLASH_DURATION_MS = 2200;
+
 /**
- * Splash / splash-art screen.
+ * Splash / brand screen.
  *
- * Placeholder for Phase 3 — the animated bloom art, tagline and timed redirect
- * to the task list are implemented in Phase 6 (UI/UX).
+ * Shows the animated "bloom" mark, wordmark and tagline, then auto-advances to
+ * the task list. The timer is cleared on destroy so navigating away early never
+ * fires a late redirect (Phase 6, frontend-design).
  */
 @Component({
   selector: 'tb-splash',
   standalone: true,
   imports: [IonContent],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <ion-content class="ion-padding ion-text-center">
-      <h1>TaskBloom</h1>
-      <p>Organize your day with clarity</p>
-    </ion-content>
-  `,
+  templateUrl: './splash.page.html',
+  styleUrl: './splash.page.scss',
 })
-export class SplashPage {}
+export class SplashPage implements OnInit, OnDestroy {
+  private readonly router = inject(Router);
+  private timer: ReturnType<typeof setTimeout> | null = null;
+
+  /** Rotation (deg) for each of the six bloom petals. */
+  readonly petalAngles = [0, 60, 120, 180, 240, 300];
+
+  ngOnInit(): void {
+    this.timer = setTimeout(() => {
+      void this.router.navigate(['/tasks'], { replaceUrl: true });
+    }, SPLASH_DURATION_MS);
+  }
+
+  ngOnDestroy(): void {
+    if (this.timer) {
+      clearTimeout(this.timer);
+    }
+  }
+}

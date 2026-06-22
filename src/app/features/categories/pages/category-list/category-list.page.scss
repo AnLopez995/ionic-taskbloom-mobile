@@ -1,12 +1,79 @@
-// Functional baseline styling (Phase 5). Premium visuals arrive in Phase 6
-// ([[09-ui-ux-design-system]]).
+.page {
+  padding: 0.5rem 1rem 6rem;
+}
 
-.dot {
-  width: 0.75rem;
-  height: 0.75rem;
-  border-radius: 999px;
-  margin-inline-end: 0.5rem;
-  background: var(--ion-color-medium);
+.intro {
+  margin: 0.5rem 0 1.5rem;
+
+  &__line {
+    margin: 0;
+    font-family: var(--tb-font-display);
+    font-weight: 700;
+    font-size: 1.65rem;
+    color: var(--tb-text);
+  }
+
+  &__sub {
+    margin: 0.25rem 0 0;
+    color: var(--tb-text-muted);
+    font-size: 0.95rem;
+  }
+}
+
+.categories {
+  background: transparent;
+  padding: 0;
+}
+
+.category {
+  --background: var(--tb-glass);
+  --border-radius: var(--tb-radius-sm);
+  --padding-start: 0.85rem;
+  --inner-padding-end: 0.85rem;
+  --min-height: 64px;
+  margin-bottom: 0.6rem;
+  border-radius: var(--tb-radius-sm);
+  border: 1px solid var(--tb-glass-border);
+
+  &__icon {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    margin-inline-end: 0.85rem;
+    color: #0e1230;
+    font-size: 1.1rem;
+
+    ion-icon {
+      font-size: 1.15rem;
+    }
+  }
+
+  &__name {
+    font-weight: 600;
+    font-size: 1rem;
+  }
+
+  &__count {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1.1;
+    font-family: var(--tb-font-display);
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--tb-text);
+
+    small {
+      font-family: var(--tb-font-body);
+      font-weight: 400;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--tb-text-faint);
+    }
+  }
 }
 
 .state {
@@ -14,12 +81,28 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.75rem;
+  gap: 0.4rem;
   padding: 3rem 1rem;
   text-align: center;
 
   &--empty ion-icon {
     font-size: 3rem;
-    color: var(--ion-color-medium);
+    color: var(--tb-violet);
+    margin-bottom: 0.5rem;
   }
+
+  &__title {
+    margin: 0;
+    font-family: var(--tb-font-display);
+    font-weight: 600;
+    font-size: 1.2rem;
+    color: var(--tb-text);
+  }
+}
+
+.add-fab {
+  --background: linear-gradient(135deg, #fb7185 0%, #8b7cf6 100%);
+  --background-activated: linear-gradient(135deg, #e85f73 0%, #7a6dd8 100%);
+  --box-shadow: var(--tb-shadow-glow);
+  --color: #ffffff;
 }

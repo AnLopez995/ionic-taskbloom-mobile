@@ -7,50 +7,57 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  @if (loading()) {
-    <div class="state state--loading">
-      <ion-spinner name="crescent"></ion-spinner>
-    </div>
-  } @else if (isEmpty()) {
-    <div class="state state--empty">
-      <ion-icon name="pricetags-outline" aria-hidden="true"></ion-icon>
-      <ion-text color="medium">
-        <p>No categories yet. Tap + to create one.</p>
-      </ion-text>
-    </div>
-  } @else {
-    <ion-list lines="full">
-      @for (category of categories(); track category.id) {
-        <ion-item-sliding>
-          <ion-item button (click)="promptRename(category)">
-            <span class="dot" slot="start" [style.background]="category.color"></span>
-            @if (category.icon) {
-              <ion-icon
-                slot="start"
-                [name]="category.icon"
-                [style.color]="category.color"
-                aria-hidden="true"
-              ></ion-icon>
-            }
-            <ion-label>{{ category.name }}</ion-label>
-            <ion-note slot="end">{{ taskCount(category) }}</ion-note>
-          </ion-item>
-          <ion-item-options side="end">
-            <ion-item-option color="medium" (click)="promptRename(category)">
-              <ion-icon slot="icon-only" name="create-outline"></ion-icon>
-            </ion-item-option>
-            <ion-item-option color="danger" (click)="confirmDelete(category)">
-              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-            </ion-item-option>
-          </ion-item-options>
-        </ion-item-sliding>
-      }
-    </ion-list>
-  }
+<ion-content>
+  <div class="page">
+    <header class="intro tb-rise">
+      <h1 class="intro__line">Your labels</h1>
+      <p class="intro__sub">Group tasks and filter your day by what matters.</p>
+    </header>
+
+    @if (loading()) {
+      <div class="state">
+        <ion-spinner name="crescent"></ion-spinner>
+      </div>
+    } @else if (isEmpty()) {
+      <div class="state state--empty tb-rise">
+        <ion-icon name="pricetags-outline" aria-hidden="true"></ion-icon>
+        <p class="state__title">No categories yet</p>
+        <ion-text color="medium">
+          <p>Tap + to create your first label.</p>
+        </ion-text>
+      </div>
+    } @else {
+      <ion-list class="categories" lines="none">
+        @for (category of categories(); track category.id) {
+          <ion-item-sliding class="tb-rise" [style.animation-delay.ms]="$index * 45">
+            <ion-item class="category tb-glass" button (click)="promptRename(category)">
+              <span class="category__icon" slot="start" [style.background]="category.color">
+                @if (category.icon) {
+                  <ion-icon [name]="category.icon" aria-hidden="true"></ion-icon>
+                }
+              </span>
+              <ion-label class="category__name">{{ category.name }}</ion-label>
+              <span class="category__count" slot="end">
+                {{ taskCount(category) }}
+                <small>{{ taskCount(category) === 1 ? 'task' : 'tasks' }}</small>
+              </span>
+            </ion-item>
+            <ion-item-options side="end">
+              <ion-item-option color="medium" (click)="promptRename(category)">
+                <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+              </ion-item-option>
+              <ion-item-option color="danger" (click)="confirmDelete(category)">
+                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+              </ion-item-option>
+            </ion-item-options>
+          </ion-item-sliding>
+        }
+      </ion-list>
+    }
+  </div>
 
   <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-    <ion-fab-button aria-label="Add category" (click)="promptCreate()">
+    <ion-fab-button class="add-fab" aria-label="Add category" (click)="promptCreate()">
       <ion-icon name="add-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>

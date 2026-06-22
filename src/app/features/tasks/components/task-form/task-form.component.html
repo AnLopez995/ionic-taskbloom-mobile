@@ -1,0 +1,45 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="dismiss()">Cancel</ion-button>
+    </ion-buttons>
+    <ion-title>New task</ion-title>
+    <ion-buttons slot="end">
+      <ion-button strong="true" [disabled]="!canSave()" (click)="submit()">Add</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <p class="field-label">Task</p>
+  <ion-input
+    class="title-field"
+    placeholder="What do you want to get done?"
+    [maxlength]="120"
+    [value]="title()"
+    (ionInput)="onTitleInput($any($event.target).value)"
+    (keyup.enter)="submit()"
+  ></ion-input>
+
+  @if (categories().length) {
+    <p class="field-label">Category</p>
+    <div class="selector">
+      <ion-chip [outline]="selectedCategoryId() !== null" (click)="pick(null)">
+        <ion-label>None</ion-label>
+      </ion-chip>
+      @for (category of categories(); track category.id) {
+        <ion-chip
+          [outline]="selectedCategoryId() !== category.id"
+          [style.--background]="selectedCategoryId() === category.id ? category.color : null"
+          [style.--color]="selectedCategoryId() === category.id ? '#0e1230' : null"
+          (click)="pick(category.id)"
+        >
+          @if (category.icon) {
+            <ion-icon [name]="category.icon" aria-hidden="true"></ion-icon>
+          }
+          <ion-label>{{ category.name }}</ion-label>
+        </ion-chip>
+      }
+    </div>
+  }
+</ion-content>

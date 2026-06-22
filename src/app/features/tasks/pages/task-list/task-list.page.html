@@ -9,91 +9,125 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <!-- Progress summary -->
-  <section class="summary" aria-label="Progress summary">
-    <div class="summary__row">
-      <ion-text>
-        <h2 class="summary__count">{{ stats().completed }} / {{ stats().total }} done</h2>
-      </ion-text>
-      <ion-text color="medium">
-        <span class="summary__pct">{{ stats().percentage }}%</span>
-      </ion-text>
-    </div>
-    <ion-progress-bar [value]="stats().ratio"></ion-progress-bar>
-  </section>
+<ion-content>
+  <div class="page">
+    <!-- Greeting -->
+    <header class="greeting tb-rise">
+      <p class="greeting__eyebrow">{{ greeting() }}</p>
+      <h1 class="greeting__line">Let's make today bloom.</h1>
+    </header>
 
-  <!-- Category filter -->
-  @if (categories().length) {
-    <div class="filters" role="tablist" aria-label="Filter tasks by category">
-      <ion-chip
-        [outline]="selectedCategoryId() !== allCategories"
-        (click)="filterBy(allCategories)"
-      >
-        <ion-label>All</ion-label>
-      </ion-chip>
-      @for (category of categories(); track category.id) {
-        <ion-chip
-          [outline]="selectedCategoryId() !== category.id"
-          [style.--background]="selectedCategoryId() === category.id ? category.color : null"
-          (click)="filterBy(category.id)"
-        >
-          @if (category.icon) {
-            <ion-icon [name]="category.icon" aria-hidden="true"></ion-icon>
+    <!-- Signature: the bloom progress hero -->
+    <section
+      class="bloom-hero tb-glass tb-rise"
+      [style.--bloom]="stats().ratio"
+      aria-label="Today's progress"
+    >
+      <span class="bloom-hero__aura" aria-hidden="true"></span>
+      <div class="bloom-hero__body">
+        <div class="bloom-hero__figure">
+          <span class="bloom-hero__pct">{{ stats().percentage }}</span>
+          <span class="bloom-hero__unit">%</span>
+        </div>
+        <p class="bloom-hero__label">
+          @if (stats().total === 0) {
+            Nothing planned yet
+          } @else {
+            {{ stats().completed }} of {{ stats().total }} done
           }
-          <ion-label>{{ category.name }}</ion-label>
-        </ion-chip>
-      }
-    </div>
-  }
+        </p>
+        <div class="bloom-hero__meter" aria-hidden="true">
+          <span class="bloom-hero__fill" [style.width.%]="stats().percentage"></span>
+        </div>
+      </div>
+    </section>
 
-  @if (loading()) {
-    <div class="state state--loading">
-      <ion-spinner name="crescent"></ion-spinner>
-    </div>
-  } @else if (isEmpty()) {
-    <div class="state state--empty">
-      <ion-icon name="checkmark-done-outline" aria-hidden="true"></ion-icon>
-      <ion-text color="medium">
-        <p>No tasks yet. Tap + to add your first one.</p>
-      </ion-text>
-    </div>
-  } @else {
-    <ion-list lines="full">
-      @for (task of tasks(); track task.id) {
-        <ion-item-sliding>
-          <ion-item>
-            <ion-checkbox
-              slot="start"
-              [checked]="task.completed"
-              (ionChange)="toggle(task)"
-              [attr.aria-label]="'Toggle ' + task.title"
-            ></ion-checkbox>
-            <ion-label [class.completed]="task.completed">
-              {{ task.title }}
-              @if (categoryOf(task); as category) {
-                <ion-chip class="task-chip" [style.--background]="category.color">
-                  <ion-label>{{ category.name }}</ion-label>
-                </ion-chip>
-              }
-            </ion-label>
-          </ion-item>
-          <ion-item-options side="end">
-            <ion-item-option color="primary" (click)="promptAssignCategory(task)">
-              <ion-icon slot="icon-only" name="pricetag-outline"></ion-icon>
-            </ion-item-option>
-            <ion-item-option color="danger" (click)="confirmDelete(task)">
-              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-            </ion-item-option>
-          </ion-item-options>
-        </ion-item-sliding>
-      }
-    </ion-list>
-  }
+    <!-- Category filter -->
+    @if (categories().length) {
+      <div class="filters" role="tablist" aria-label="Filter tasks by category">
+        <ion-chip
+          [outline]="selectedCategoryId() !== allCategories"
+          (click)="filterBy(allCategories)"
+        >
+          <ion-label>All</ion-label>
+        </ion-chip>
+        @for (category of categories(); track category.id) {
+          <ion-chip
+            [outline]="selectedCategoryId() !== category.id"
+            [style.--background]="selectedCategoryId() === category.id ? category.color : null"
+            [style.--color]="selectedCategoryId() === category.id ? '#0e1230' : null"
+            (click)="filterBy(category.id)"
+          >
+            @if (category.icon) {
+              <ion-icon [name]="category.icon" aria-hidden="true"></ion-icon>
+            }
+            <ion-label>{{ category.name }}</ion-label>
+          </ion-chip>
+        }
+      </div>
+    }
+
+    @if (loading()) {
+      <div class="state">
+        <ion-spinner name="crescent"></ion-spinner>
+      </div>
+    } @else if (isEmpty()) {
+      <div class="state state--empty tb-rise">
+        <ion-icon name="leaf-outline" aria-hidden="true"></ion-icon>
+        <p class="state__title">A fresh start</p>
+        <ion-text color="medium">
+          <p>No tasks yet. Add one small thing to begin.</p>
+        </ion-text>
+      </div>
+    } @else {
+      <ion-list class="tasks" lines="none">
+        @for (task of tasks(); track task.id) {
+          <ion-item-sliding class="tb-rise" [style.animation-delay.ms]="$index * 45">
+            <ion-item class="task tb-glass" [class.task--done]="task.completed">
+              <ion-checkbox
+                slot="start"
+                [checked]="task.completed"
+                (ionChange)="toggle(task)"
+                [attr.aria-label]="'Toggle ' + task.title"
+              ></ion-checkbox>
+              <ion-label class="task__label">
+                <span class="task__title">{{ task.title }}</span>
+                @if (categoryOf(task); as category) {
+                  <span class="task__tag" [style.background]="category.color">
+                    {{ category.name }}
+                  </span>
+                }
+              </ion-label>
+            </ion-item>
+            <ion-item-options side="end">
+              <ion-item-option color="primary" (click)="promptAssignCategory(task)">
+                <ion-icon slot="icon-only" name="pricetag-outline"></ion-icon>
+              </ion-item-option>
+              <ion-item-option color="danger" (click)="confirmDelete(task)">
+                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+              </ion-item-option>
+            </ion-item-options>
+          </ion-item-sliding>
+        }
+      </ion-list>
+    }
+  </div>
 
   <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-    <ion-fab-button aria-label="Add task" (click)="promptAdd()">
+    <ion-fab-button class="add-fab" aria-label="Add task" (click)="openAdd()">
       <ion-icon name="add-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>
+
+  <!-- Add-task bottom sheet -->
+  <ion-modal
+    [isOpen]="addOpen()"
+    [initialBreakpoint]="0.6"
+    [breakpoints]="[0, 0.6, 0.9]"
+    (didDismiss)="closeAdd()"
+  >
+    <ng-template>
+      <tb-task-form (saved)="onFormSave($event)" (cancelled)="closeAdd()"></tb-task-form>
+    </ng-template>
+  </ion-modal>
 </ion-content>

@@ -1,0 +1,38 @@
+<ion-content [fullscreen]="true" scrollY="false">
+  <div class="splash">
+    <!-- Bloom mark: petals open around a check, the brand's core metaphor -->
+    <div class="bloom" aria-hidden="true">
+      <span class="bloom__halo"></span>
+      <svg class="bloom__art" viewBox="0 0 120 120" role="img">
+        <defs>
+          <linearGradient id="petalA" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#fb7185" />
+            <stop offset="1" stop-color="#8b7cf6" />
+          </linearGradient>
+          <linearGradient id="petalB" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#8b7cf6" />
+            <stop offset="1" stop-color="#5eead4" />
+          </linearGradient>
+        </defs>
+        <g class="bloom__petals">
+          @for (rot of petalAngles; track rot) {
+            <ellipse
+              class="bloom__petal"
+              cx="60"
+              cy="34"
+              rx="15"
+              ry="26"
+              [attr.fill]="$index % 2 === 0 ? 'url(#petalA)' : 'url(#petalB)'"
+              [attr.transform]="'rotate(' + rot + ' 60 60)'"
+            />
+          }
+        </g>
+        <circle class="bloom__core" cx="60" cy="60" r="20" />
+        <path class="bloom__check" d="M51 60 l6 6 l13 -14" />
+      </svg>
+    </div>
+
+    <h1 class="splash__word">TaskBloom</h1>
+    <p class="splash__tag">Organize your day with clarity</p>
+  </div>
+</ion-content>

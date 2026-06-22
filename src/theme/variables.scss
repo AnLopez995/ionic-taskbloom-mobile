@@ -1,2 +1,106 @@
-// For information on how to create your own theme, please refer to:
-// https://ionicframework.com/docs/theming/
+// =============================================================================
+// TaskBloom — theme tokens & Ionic variable overrides
+// Visual direction (Phase 6, frontend-design): deep night-indigo → violet
+// gradient, glassmorphism surfaces, coral/violet/mint accents. Always-dark brand
+// theme (not system-dependent) so the identity is consistent everywhere.
+// Source of truth documented in docs/obsidian-mcp/09-ui-ux-design-system.md.
+// =============================================================================
+
+:root {
+  // --- Brand tokens -----------------------------------------------------------
+  // Backgrounds (deep → lighter for the ambient top glow)
+  --tb-bg-1: #0e1230; // deep night indigo
+  --tb-bg-2: #1c1850; // violet-navy
+  --tb-bg-3: #3a2a6b; // lavender-dark (glow)
+
+  // Accents
+  --tb-violet: #8b7cf6;
+  --tb-mint: #5eead4;
+  --tb-coral: #fb7185;
+
+  // Glass surfaces
+  --tb-glass: rgba(255, 255, 255, 0.055);
+  --tb-glass-strong: rgba(255, 255, 255, 0.09);
+  --tb-glass-border: rgba(255, 255, 255, 0.12);
+  --tb-glass-border-strong: rgba(255, 255, 255, 0.22);
+
+  // Text
+  --tb-text: #f3f1ff;
+  --tb-text-muted: #a8a3ce;
+  --tb-text-faint: #6f6b96;
+
+  // Shape & depth
+  --tb-radius: 22px;
+  --tb-radius-sm: 14px;
+  --tb-radius-pill: 999px;
+  --tb-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.6);
+  --tb-shadow-glow: 0 12px 36px -10px rgba(139, 124, 246, 0.5);
+  --tb-blur: blur(18px) saturate(140%);
+
+  // Type
+  --tb-font-display: 'Sora', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --tb-font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  // Motion
+  --tb-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  // --- Ionic mappings ---------------------------------------------------------
+  --ion-font-family: var(--tb-font-body);
+  --ion-background-color: var(--tb-bg-1);
+  --ion-background-color-rgb: 14, 18, 48;
+  --ion-text-color: var(--tb-text);
+  --ion-text-color-rgb: 243, 241, 255;
+
+  --ion-toolbar-background: transparent;
+  --ion-toolbar-color: var(--tb-text);
+  --ion-item-background: transparent;
+  --ion-item-color: var(--tb-text);
+
+  // Primary — violet
+  --ion-color-primary: #8b7cf6;
+  --ion-color-primary-rgb: 139, 124, 246;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-contrast-rgb: 255, 255, 255;
+  --ion-color-primary-shade: #7a6dd8;
+  --ion-color-primary-tint: #9789f7;
+
+  // Secondary — mint
+  --ion-color-secondary: #5eead4;
+  --ion-color-secondary-rgb: 94, 234, 212;
+  --ion-color-secondary-contrast: #06251f;
+  --ion-color-secondary-contrast-rgb: 6, 37, 31;
+  --ion-color-secondary-shade: #53ceba;
+  --ion-color-secondary-tint: #6eecd8;
+
+  // Tertiary — coral
+  --ion-color-tertiary: #fb7185;
+  --ion-color-tertiary-rgb: 251, 113, 133;
+  --ion-color-tertiary-contrast: #2a0710;
+  --ion-color-tertiary-contrast-rgb: 42, 7, 16;
+  --ion-color-tertiary-shade: #dd6375;
+  --ion-color-tertiary-tint: #fb7f91;
+
+  // Success — soft green
+  --ion-color-success: #4ade80;
+  --ion-color-success-rgb: 74, 222, 128;
+  --ion-color-success-contrast: #052e16;
+  --ion-color-success-contrast-rgb: 5, 46, 22;
+  --ion-color-success-shade: #41c370;
+  --ion-color-success-tint: #5ce18d;
+
+  // Danger — coral-red
+  --ion-color-danger: #fb7185;
+  --ion-color-danger-rgb: 251, 113, 133;
+  --ion-color-danger-contrast: #ffffff;
+  --ion-color-danger-contrast-rgb: 255, 255, 255;
+  --ion-color-danger-shade: #dd6375;
+  --ion-color-danger-tint: #fb7f91;
+
+  // Medium / muted
+  --ion-color-medium: #a8a3ce;
+  --ion-color-medium-rgb: 168, 163, 206;
+  --ion-color-medium-contrast: #0e1230;
+  --ion-color-medium-contrast-rgb: 14, 18, 48;
+  --ion-color-medium-shade: #948fb5;
+  --ion-color-medium-tint: #b1acd3;
+}

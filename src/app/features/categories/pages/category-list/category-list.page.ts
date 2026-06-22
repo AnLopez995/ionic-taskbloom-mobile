@@ -14,7 +14,6 @@ import {
   IonItemSliding,
   IonLabel,
   IonList,
-  IonNote,
   IonSpinner,
   IonText,
   IonTitle,
@@ -26,6 +25,7 @@ import { addOutline, createOutline, pricetagsOutline, trashOutline } from 'ionic
 import { CATEGORY_COLORS, CATEGORY_ICONS } from '../../../../core/constants/app.constants';
 import { Category } from '../../../../core/models';
 import { CategoryStateService } from '../../../../core/services/category-state.service';
+import { registerCategoryIcons } from '../../../../core/utils/icons.util';
 
 /**
  * Category management page (Phase 5): list / create / edit / delete categories,
@@ -51,7 +51,6 @@ import { CategoryStateService } from '../../../../core/services/category-state.s
     IonItemOptions,
     IonItemOption,
     IonLabel,
-    IonNote,
     IonIcon,
     IonFab,
     IonFabButton,
@@ -74,6 +73,7 @@ export class CategoryListPage implements OnInit {
 
   constructor() {
     addIcons({ addOutline, createOutline, trashOutline, pricetagsOutline });
+    registerCategoryIcons();
   }
 
   ngOnInit(): void {

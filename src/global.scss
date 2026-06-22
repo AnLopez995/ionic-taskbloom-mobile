@@ -32,6 +32,103 @@
  * https://ionicframework.com/docs/theming/dark-mode
  */
 
-/* @import "@ionic/angular/css/palettes/dark.always.css"; */
-/* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+/* TaskBloom is an always-dark branded theme. We load Ionic's *always* dark
+ * palette as the base so every component (alerts, inputs, modals, sheets) gets
+ * correct dark `--ion-color-step-*` contrast; theme/variables.scss then layers
+ * the brand colors on top (loaded after this file, so brand values win). */
+@import '@ionic/angular/css/palettes/dark.always.css';
+
+/* -------------------------------------------------------------------------- */
+/* Brand fonts — Sora (display) + Inter (body).                               */
+/* Loaded from Google Fonts for the demo; production should self-host these   */
+/* for full offline support (noted in 09-ui-ux-design-system.md).             */
+/* -------------------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Sora:wght@500;600;700;800&display=swap');
+
+/* -------------------------------------------------------------------------- */
+/* Ambient background — deep indigo with two soft violet/mint glows.          */
+/* Painted on the scroll container so every screen shares the same atmosphere.*/
+/* -------------------------------------------------------------------------- */
+ion-content {
+  --background:
+    radial-gradient(120% 80% at 12% -8%, rgba(139, 124, 246, 0.32) 0%, transparent 55%),
+    radial-gradient(90% 70% at 100% 0%, rgba(94, 234, 212, 0.12) 0%, transparent 50%),
+    linear-gradient(168deg, #161a44 0%, #11143a 42%, #0c0f2e 100%);
+}
+
+body {
+  font-family: var(--tb-font-body);
+  letter-spacing: 0.01em;
+}
+
+h1,
+h2,
+h3,
+.tb-display {
+  font-family: var(--tb-font-display);
+  letter-spacing: -0.02em;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Glass surface — the recurring card/row material.                           */
+/* -------------------------------------------------------------------------- */
+.tb-glass {
+  background: var(--tb-glass);
+  border: 1px solid var(--tb-glass-border);
+  border-radius: var(--tb-radius);
+  backdrop-filter: var(--tb-blur);
+  -webkit-backdrop-filter: var(--tb-blur);
+  box-shadow: var(--tb-shadow);
+}
+
+/* Toolbars stay transparent so the ambient background shows through. */
+ion-toolbar {
+  --border-width: 0;
+  --background: transparent;
+}
+
+ion-title {
+  font-family: var(--tb-font-display);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Motion — short, GPU-friendly, opt-out friendly.                            */
+/* -------------------------------------------------------------------------- */
+@keyframes tb-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes tb-pop {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.18);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.tb-rise {
+  animation: tb-rise 0.45s var(--tb-ease) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

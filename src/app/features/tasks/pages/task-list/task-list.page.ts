@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import {
   AlertController,
@@ -17,7 +24,7 @@ import {
   IonItemSliding,
   IonLabel,
   IonList,
-  IonProgressBar,
+  IonModal,
   IonSpinner,
   IonText,
   IonTitle,
@@ -27,7 +34,7 @@ import {
 import { addIcons } from 'ionicons';
 import {
   addOutline,
-  checkmarkDoneOutline,
+  leafOutline,
   pricetagOutline,
   pricetagsOutline,
   trashOutline,
@@ -36,20 +43,24 @@ import { ALL_CATEGORIES } from '../../../../core/constants/app.constants';
 import { Category, Task } from '../../../../core/models';
 import { CategoryStateService } from '../../../../core/services/category-state.service';
 import { TaskStateService } from '../../../../core/services/task-state.service';
+import { registerCategoryIcons } from '../../../../core/utils/icons.util';
+import { TaskFormComponent, TaskFormResult } from '../../components/task-form/task-form.component';
 
 /**
- * Home / task list page.
+ * Home / task list page (Phase 6 premium UI).
  *
- * Lists tasks from the reactive store with a category filter (Phase 5), adds via
- * a prompt, toggles completion, assigns categories, and deletes with confirmation
- * — all persisted locally. The premium visual layer (cards, animations, custom
- * add sheet) lands in Phase 6.
+ * A greeting, the "bloom" progress hero (completion grows and saturates a soft
+ * aura), a category filter chip row, and glass task rows. Adding opens the
+ * bottom-sheet {@link TaskFormComponent}; assigning a category and deleting use
+ * confirm dialogs. All state is reactive via {@link TaskStateService} and
+ * persisted locally.
  */
 @Component({
   selector: 'tb-task-list',
   standalone: true,
   imports: [
     RouterLink,
+    TaskFormComponent,
     IonHeader,
     IonToolbar,
     IonTitle,
@@ -67,9 +78,9 @@ import { TaskStateService } from '../../../../core/services/task-state.service';
     IonIcon,
     IonFab,
     IonFabButton,
-    IonProgressBar,
     IonSpinner,
     IonText,
+    IonModal,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './task-list.page.html',
@@ -91,19 +102,19 @@ export class TaskListPage implements OnInit {
   readonly selectedCategoryId = this.store.selectedCategoryId;
   readonly categories = this.categoryStore.categories;
 
+  /** Time-of-day greeting, fixed on entry. */
+  readonly greeting = signal(this.resolveGreeting());
+  /** Whether the add-task sheet is open. */
+  readonly addOpen = signal(false);
+
   /** Fast id → category lookup so each task row can render its category chip. */
   private readonly categoriesById = computed<Map<string, Category>>(
     () => new Map(this.categoryStore.categories().map((category) => [category.id, category])),
   );
 
   constructor() {
-    addIcons({
-      addOutline,
-      trashOutline,
-      checkmarkDoneOutline,
-      pricetagOutline,
-      pricetagsOutline,
-    });
+    addIcons({ addOutline, trashOutline, leafOutline, pricetagOutline, pricetagsOutline });
+    registerCategoryIcons();
   }
 
   ngOnInit(): void {
@@ -130,43 +141,17 @@ export class TaskListPage implements OnInit {
     await this.store.toggleCompleted(task.id);
   }
 
-  /** Prompt for a title and create a task (in the active category, if any). */
-  async promptAdd(): Promise<void> {
-    const alert = await this.alertCtrl.create({
-      header: 'New task',
-      inputs: [
-        {
-          name: 'title',
-          type: 'text',
-          placeholder: 'What do you want to get done?',
-          attributes: { maxlength: 120, autocapitalize: 'sentences' },
-        },
-      ],
-      buttons: [
-        { text: 'Cancel', role: 'cancel' },
-        {
-          text: 'Add',
-          role: 'confirm',
-          handler: (data: { title?: string }) => {
-            const title = (data.title ?? '').trim();
-            if (!title) {
-              return false;
-            }
-            void this.addTask(title);
-            return true;
-          },
-        },
-      ],
-    });
-    await alert.present();
+  openAdd(): void {
+    this.addOpen.set(true);
   }
 
-  private async addTask(title: string): Promise<void> {
-    // Pre-fill the active filter as the category so adding within a filtered
-    // view lands the task where the user is looking.
-    const active = this.selectedCategoryId();
-    const categoryId = active === ALL_CATEGORIES ? null : active;
-    await this.store.addTask({ title, categoryId });
+  closeAdd(): void {
+    this.addOpen.set(false);
+  }
+
+  async onFormSave(result: TaskFormResult): Promise<void> {
+    this.closeAdd();
+    await this.store.addTask({ title: result.title, categoryId: result.categoryId });
     await this.showToast('Task added');
   }
 
@@ -176,12 +161,7 @@ export class TaskListPage implements OnInit {
     const alert = await this.alertCtrl.create({
       header: 'Assign category',
       inputs: [
-        {
-          type: 'radio',
-          label: 'None',
-          value: '',
-          checked: !task.categoryId,
-        },
+        { type: 'radio', label: 'None', value: '', checked: !task.categoryId },
         ...categories.map((category) => ({
           type: 'radio' as const,
           label: category.name,
@@ -228,11 +208,18 @@ export class TaskListPage implements OnInit {
   }
 
   private async showToast(message: string): Promise<void> {
-    const toast = await this.toastCtrl.create({
-      message,
-      duration: 1500,
-      position: 'bottom',
-    });
+    const toast = await this.toastCtrl.create({ message, duration: 1500, position: 'bottom' });
     await toast.present();
+  }
+
+  private resolveGreeting(): string {
+    const hour = new Date().getHours();
+    if (hour < 12) {
+      return 'Good morning';
+    }
+    if (hour < 18) {
+      return 'Good afternoon';
+    }
+    return 'Good evening';
   }
 }
