@@ -1,16 +1,25 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
-
-export const environment = {
-  production: false
-};
-
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
+/**
+ * Development environment.
  *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
+ * Firebase config is a PLACEHOLDER. The app runs fully without it: if the
+ * config is empty/invalid or Firebase is unreachable, RemoteConfigService
+ * falls back to `remoteConfigDefaults` (see ADR-004). Paste your own web
+ * config from the Firebase console to enable live Remote Config.
  */
-// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
+export const environment = {
+  production: false,
+  firebase: {
+    apiKey: '',
+    authDomain: '',
+    projectId: '',
+    storageBucket: '',
+    messagingSenderId: '',
+    appId: '',
+  },
+  /** Local fallback values for Remote Config (mirror the keys in the console). */
+  remoteConfigDefaults: {
+    categories_enabled: true,
+  },
+  /** Low in dev so flag changes appear quickly; raise for production. */
+  remoteConfigFetchIntervalMs: 0,
+};
