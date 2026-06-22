@@ -1,0 +1,9 @@
+node_modules
+dist
+www
+platforms
+plugins
+coverage
+.angular
+docs/obsidian-mcp
+package-lock.json
