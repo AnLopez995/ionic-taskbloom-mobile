@@ -5,12 +5,12 @@
 export const environment = {
   production: true,
   firebase: {
-    apiKey: '',
-    authDomain: '',
-    projectId: '',
-    storageBucket: '',
-    messagingSenderId: '',
-    appId: '',
+    apiKey: "AIzaSyDYWaNEJOD_U3I_0OmswAvtIoQFMCoxk_c",
+    authDomain: "taskbloom-bacaf.firebaseapp.com",
+    projectId: "taskbloom-bacaf",
+    storageBucket: "taskbloom-bacaf.firebasestorage.app",
+    messagingSenderId: "594610299287",
+    appId: "1:594610299287:web:86ff43f561182313c764d2"
   },
   remoteConfigDefaults: {
     categories_enabled: true,
