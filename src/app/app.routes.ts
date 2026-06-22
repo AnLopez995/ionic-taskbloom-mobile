@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { categoriesEnabledGuard } from './core/guards/categories-enabled.guard';
 
 /**
  * Top-level routes. Every feature page is lazy-loaded via `loadComponent`
@@ -6,7 +7,7 @@ import { Routes } from '@angular/router';
  *
  * - `/splash`   → animated splash, then redirects to tasks.
  * - `/tasks`    → home / task list (default).
- * - `/categories` → category management (will be guarded by the categories feature flag in Phase 7).
+ * - `/categories` → category management, guarded by the `categories_enabled` flag.
  */
 export const routes: Routes = [
   {
@@ -20,6 +21,7 @@ export const routes: Routes = [
   },
   {
     path: 'categories',
+    canActivate: [categoriesEnabledGuard],
     loadComponent: () =>
       import('./features/categories/pages/category-list/category-list.page').then(
         (m) => m.CategoryListPage,

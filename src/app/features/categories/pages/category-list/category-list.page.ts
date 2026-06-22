@@ -20,20 +20,23 @@ import {
   IonToolbar,
   ToastController,
 } from '@ionic/angular/standalone';
+import { ModalController } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { addOutline, createOutline, pricetagsOutline, trashOutline } from 'ionicons/icons';
-import { CATEGORY_COLORS, CATEGORY_ICONS } from '../../../../core/constants/app.constants';
 import { Category } from '../../../../core/models';
 import { CategoryStateService } from '../../../../core/services/category-state.service';
 import { registerCategoryIcons } from '../../../../core/utils/icons.util';
+import {
+  CategoryFormComponent,
+  CategoryFormResult,
+} from '../../components/category-form/category-form.component';
 
 /**
- * Category management page (Phase 5): list / create / edit / delete categories,
- * each with a live task counter. Deleting a category detaches it from its tasks.
+ * Category management page: list / create / edit / delete categories, each with a
+ * live task counter. Deleting a category detaches it from its tasks.
  *
- * Create/edit use a name prompt as the functional baseline; color + icon are
- * auto-assigned by cycling the brand palette. The full color/icon picker is a
- * Phase 6 (premium UI) concern.
+ * Create and edit open the {@link CategoryFormComponent} bottom sheet (name +
+ * color + icon picker). Delete uses a confirm alert.
  */
 @Component({
   selector: 'tb-category-list',
@@ -64,6 +67,7 @@ import { registerCategoryIcons } from '../../../../core/utils/icons.util';
 export class CategoryListPage implements OnInit {
   private readonly store = inject(CategoryStateService);
   private readonly alertCtrl = inject(AlertController);
+  private readonly modalCtrl = inject(ModalController);
   private readonly toastCtrl = inject(ToastController);
 
   readonly categories = this.store.categories;
@@ -89,77 +93,37 @@ export class CategoryListPage implements OnInit {
     return this.counts()[category.id] ?? 0;
   }
 
-  /** Prompt for a name and create a category with an auto-assigned color/icon. */
-  async promptCreate(): Promise<void> {
-    const alert = await this.alertCtrl.create({
-      header: 'New category',
-      inputs: [
-        {
-          name: 'name',
-          type: 'text',
-          placeholder: 'e.g. Work, Personal, Health',
-          attributes: { maxlength: 40, autocapitalize: 'sentences' },
-        },
-      ],
-      buttons: [
-        { text: 'Cancel', role: 'cancel' },
-        {
-          text: 'Create',
-          role: 'confirm',
-          handler: (data: { name?: string }) => {
-            const name = (data.name ?? '').trim();
-            if (!name) {
-              return false;
-            }
-            void this.createCategory(name);
-            return true;
-          },
-        },
-      ],
-    });
-    await alert.present();
+  /** Open the create sheet. */
+  async openCreate(): Promise<void> {
+    await this.openForm();
   }
 
-  private async createCategory(name: string): Promise<void> {
-    // Cycle the brand palette/icons so each new category gets a distinct look.
-    const index = this.categories().length;
-    await this.store.addCategory({
-      name,
-      color: CATEGORY_COLORS[index % CATEGORY_COLORS.length],
-      icon: CATEGORY_ICONS[index % CATEGORY_ICONS.length],
-    });
-    await this.showToast('Category created');
+  /** Open the edit sheet pre-filled with the given category. */
+  async openEdit(category: Category): Promise<void> {
+    await this.openForm(category);
   }
 
-  /** Prompt to rename an existing category. */
-  async promptRename(category: Category): Promise<void> {
-    const alert = await this.alertCtrl.create({
-      header: 'Rename category',
-      inputs: [
-        {
-          name: 'name',
-          type: 'text',
-          value: category.name,
-          attributes: { maxlength: 40, autocapitalize: 'sentences' },
-        },
-      ],
-      buttons: [
-        { text: 'Cancel', role: 'cancel' },
-        {
-          text: 'Save',
-          role: 'confirm',
-          handler: (data: { name?: string }) => {
-            const name = (data.name ?? '').trim();
-            if (!name) {
-              return false;
-            }
-            void this.store.updateCategory(category.id, { name });
-            return true;
-          },
-        },
-      ],
+  /** Present the category form sheet and persist the result, if saved. */
+  private async openForm(category?: Category): Promise<void> {
+    const modal = await this.modalCtrl.create({
+      component: CategoryFormComponent,
+      componentProps: { category },
+      initialBreakpoint: 0.85,
+      breakpoints: [0, 0.85, 1],
     });
-    await alert.present();
+    await modal.present();
+
+    const { data, role } = await modal.onWillDismiss<CategoryFormResult>();
+    if (role !== 'save' || !data) {
+      return;
+    }
+    if (category) {
+      await this.store.updateCategory(category.id, data);
+      await this.showToast('Category updated');
+    } else {
+      await this.store.addCategory(data);
+      await this.showToast('Category created');
+    }
   }
 
   /** Confirm, then delete (cascades: detaches the category from its tasks). */

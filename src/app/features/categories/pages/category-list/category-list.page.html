@@ -29,8 +29,11 @@
     } @else {
       <ion-list class="categories" lines="none">
         @for (category of categories(); track category.id) {
-          <ion-item-sliding class="tb-rise" [style.animation-delay.ms]="$index * 45">
-            <ion-item class="category tb-glass" button (click)="promptRename(category)">
+          <ion-item-sliding
+            class="tb-rise"
+            [style.animation-delay.ms]="($index < 10 ? $index : 10) * 45"
+          >
+            <ion-item class="category" button (click)="openEdit(category)">
               <span class="category__icon" slot="start" [style.background]="category.color">
                 @if (category.icon) {
                   <ion-icon [name]="category.icon" aria-hidden="true"></ion-icon>
@@ -43,7 +46,7 @@
               </span>
             </ion-item>
             <ion-item-options side="end">
-              <ion-item-option color="medium" (click)="promptRename(category)">
+              <ion-item-option color="medium" (click)="openEdit(category)">
                 <ion-icon slot="icon-only" name="create-outline"></ion-icon>
               </ion-item-option>
               <ion-item-option color="danger" (click)="confirmDelete(category)">
@@ -57,7 +60,7 @@
   </div>
 
   <ion-fab slot="fixed" vertical="bottom" horizontal="end">
-    <ion-fab-button class="add-fab" aria-label="Add category" (click)="promptCreate()">
+    <ion-fab-button class="add-fab" aria-label="Add category" (click)="openCreate()">
       <ion-icon name="add-outline"></ion-icon>
     </ion-fab-button>
   </ion-fab>

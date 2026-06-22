@@ -21,7 +21,7 @@
     (keyup.enter)="submit()"
   ></ion-input>
 
-  @if (categories().length) {
+  @if (categoriesEnabled() && categories().length) {
     <p class="field-label">Category</p>
     <div class="selector">
       <ion-chip [outline]="selectedCategoryId() !== null" (click)="pick(null)">

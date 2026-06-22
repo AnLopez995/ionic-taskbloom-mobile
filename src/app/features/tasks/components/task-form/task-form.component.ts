@@ -21,6 +21,7 @@ import {
 } from '@ionic/angular/standalone';
 import { ALL_CATEGORIES } from '../../../../core/constants/app.constants';
 import { CategoryStateService } from '../../../../core/services/category-state.service';
+import { RemoteConfigService } from '../../../../core/services/remote-config.service';
 import { TaskStateService } from '../../../../core/services/task-state.service';
 import { registerCategoryIcons } from '../../../../core/utils/icons.util';
 
@@ -62,12 +63,15 @@ export interface TaskFormResult {
 export class TaskFormComponent {
   private readonly categoryStore = inject(CategoryStateService);
   private readonly taskStore = inject(TaskStateService);
+  private readonly remoteConfig = inject(RemoteConfigService);
 
   readonly saved = output<TaskFormResult>();
   readonly cancelled = output<void>();
 
   /** Categories offered in the selector. */
   protected readonly categories = this.categoryStore.categories;
+  /** Whether the category selector is shown at all (Remote Config flag). */
+  protected readonly categoriesEnabled = this.remoteConfig.categoriesEnabled;
 
   protected readonly title = signal('');
   // Defaults to the active filter, but stays writable so the user can change it.

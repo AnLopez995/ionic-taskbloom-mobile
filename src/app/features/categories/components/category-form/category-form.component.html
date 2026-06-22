@@ -1,0 +1,63 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="dismiss()">Cancel</ion-button>
+    </ion-buttons>
+    <ion-title>{{ isEdit() ? 'Edit category' : 'New category' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button strong="true" [disabled]="!canSave()" (click)="save()">Save</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Live preview -->
+  <div class="preview">
+    <span class="preview__icon" [style.background]="selectedColor()">
+      <ion-icon [name]="selectedIcon()" aria-hidden="true"></ion-icon>
+    </span>
+    <span class="preview__name">{{ name().trim() || 'Category name' }}</span>
+  </div>
+
+  <p class="field-label">Name</p>
+  <ion-input
+    class="name-field"
+    placeholder="e.g. Work, Personal, Health"
+    [maxlength]="40"
+    [value]="name()"
+    (ionInput)="onNameInput($any($event.target).value)"
+    (keyup.enter)="save()"
+  ></ion-input>
+
+  <p class="field-label">Color</p>
+  <div class="swatches">
+    @for (color of colors; track color) {
+      <button
+        type="button"
+        class="swatch"
+        [class.swatch--active]="selectedColor() === color"
+        [style.background]="color"
+        [attr.aria-label]="'Choose color ' + color"
+        [attr.aria-pressed]="selectedColor() === color"
+        (click)="pickColor(color)"
+      ></button>
+    }
+  </div>
+
+  <p class="field-label">Icon</p>
+  <div class="icons">
+    @for (icon of icons; track icon) {
+      <button
+        type="button"
+        class="icon-tile"
+        [class.icon-tile--active]="selectedIcon() === icon"
+        [style.--active-color]="selectedColor()"
+        [attr.aria-label]="'Choose icon ' + icon"
+        [attr.aria-pressed]="selectedIcon() === icon"
+        (click)="pickIcon(icon)"
+      >
+        <ion-icon [name]="icon" aria-hidden="true"></ion-icon>
+      </button>
+    }
+  </div>
+</ion-content>

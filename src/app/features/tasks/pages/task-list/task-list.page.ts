@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import {
+  ActionSheetController,
   AlertController,
   IonButton,
   IonButtons,
@@ -34,14 +35,17 @@ import {
 import { addIcons } from 'ionicons';
 import {
   addOutline,
+  flaskOutline,
   leafOutline,
   pricetagOutline,
   pricetagsOutline,
   trashOutline,
 } from 'ionicons/icons';
 import { ALL_CATEGORIES } from '../../../../core/constants/app.constants';
+import { DevSeederService } from '../../../../core/dev/dev-seeder.service';
 import { Category, Task } from '../../../../core/models';
 import { CategoryStateService } from '../../../../core/services/category-state.service';
+import { RemoteConfigService } from '../../../../core/services/remote-config.service';
 import { TaskStateService } from '../../../../core/services/task-state.service';
 import { registerCategoryIcons } from '../../../../core/utils/icons.util';
 import { TaskFormComponent, TaskFormResult } from '../../components/task-form/task-form.component';
@@ -89,10 +93,18 @@ import { TaskFormComponent, TaskFormResult } from '../../components/task-form/ta
 export class TaskListPage implements OnInit {
   private readonly store = inject(TaskStateService);
   private readonly categoryStore = inject(CategoryStateService);
+  private readonly remoteConfig = inject(RemoteConfigService);
+  private readonly seeder = inject(DevSeederService);
   private readonly alertCtrl = inject(AlertController);
+  private readonly actionSheetCtrl = inject(ActionSheetController);
   private readonly toastCtrl = inject(ToastController);
 
   readonly allCategories = ALL_CATEGORIES;
+
+  /** Whether the categories feature is enabled (Remote Config flag). */
+  readonly categoriesEnabled = this.remoteConfig.categoriesEnabled;
+  /** Whether the dev tools (data seeder) are available (non-production only). */
+  readonly devEnabled = this.seeder.enabled;
 
   /** Reactive view-model surfaced to the template. */
   readonly tasks = this.store.filteredTasks;
@@ -113,7 +125,14 @@ export class TaskListPage implements OnInit {
   );
 
   constructor() {
-    addIcons({ addOutline, trashOutline, leafOutline, pricetagOutline, pricetagsOutline });
+    addIcons({
+      addOutline,
+      trashOutline,
+      leafOutline,
+      pricetagOutline,
+      pricetagsOutline,
+      flaskOutline,
+    });
     registerCategoryIcons();
   }
 
@@ -153,6 +172,42 @@ export class TaskListPage implements OnInit {
     this.closeAdd();
     await this.store.addTask({ title: result.title, categoryId: result.categoryId });
     await this.showToast('Task added');
+  }
+
+  /** Dev-only menu to seed/clear bulk data for performance testing. */
+  async openDevMenu(): Promise<void> {
+    const sheet = await this.actionSheetCtrl.create({
+      header: 'Dev tools',
+      buttons: [
+        {
+          text: 'Seed 500 tasks',
+          icon: 'flask-outline',
+          handler: () => {
+            void this.runSeed();
+          },
+        },
+        {
+          text: 'Clear all tasks',
+          role: 'destructive',
+          icon: 'trash-outline',
+          handler: () => {
+            void this.runClear();
+          },
+        },
+        { text: 'Cancel', role: 'cancel' },
+      ],
+    });
+    await sheet.present();
+  }
+
+  private async runSeed(): Promise<void> {
+    await this.seeder.seedTasks();
+    await this.showToast('Seeded 500 tasks');
+  }
+
+  private async runClear(): Promise<void> {
+    await this.seeder.clearTasks();
+    await this.showToast('Cleared all tasks');
   }
 
   /** Radio picker to assign (or clear) a task's category. */

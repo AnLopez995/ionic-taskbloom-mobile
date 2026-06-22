@@ -125,8 +125,10 @@
   padding: 0;
 }
 
+// No backdrop-filter on rows by design: a list of 500 blurred items janks while
+// scrolling. The blur is reserved for the single hero card (perf — Phase 8).
 .task {
-  --background: var(--tb-glass);
+  --background: var(--tb-glass-strong);
   --border-radius: var(--tb-radius-sm);
   --padding-start: 1rem;
   --inner-padding-end: 0.75rem;
