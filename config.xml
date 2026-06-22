@@ -1,0 +1,47 @@
+<?xml version='1.0' encoding='utf-8'?>
+<widget id="com.taskbloom.app" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>TaskBloom</name>
+    <description>Organize your day with clarity — a premium hybrid To-Do app.</description>
+    <author email="libardolopez805@gmail.com" href="https://github.com/">Andres Lopez</author>
+
+    <!-- Web assets are emitted to www/ by `ng build` (angular.json outputPath). -->
+    <content src="index.html" />
+
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+
+    <!-- Remote Config talks to Google/Firebase endpoints. -->
+    <access origin="*" />
+    <allow-navigation href="https://*.googleapis.com/*" />
+    <allow-navigation href="https://*.firebaseio.com/*" />
+
+    <!-- Brand-consistent shell behavior. -->
+    <preference name="Orientation" value="portrait" />
+    <preference name="BackgroundColor" value="#FF0E1230" />
+    <preference name="Fullscreen" value="false" />
+    <preference name="DisallowOverscroll" value="true" />
+    <preference name="SplashMaintainAspectRatio" value="true" />
+    <preference name="AutoHideSplashScreen" value="true" />
+    <preference name="SplashScreenDelay" value="2000" />
+
+    <platform name="android">
+        <preference name="StatusBarStyle" value="lightcontent" />
+        <preference name="StatusBarBackgroundColor" value="#0e1230" />
+        <preference name="android-minSdkVersion" value="24" />
+        <preference name="AndroidWindowSplashScreenBackgroundColor" value="#0e1230" />
+    </platform>
+
+    <platform name="ios">
+        <preference name="StatusBarStyle" value="lightcontent" />
+        <preference name="WKWebViewOnly" value="true" />
+    </platform>
+
+    <!-- Native plugins (mirrored in package.json `cordova.plugins`). -->
+    <!-- cordova-android 15 provides the splash screen natively (AndroidWindowSplashScreen*),
+         so the legacy cordova-plugin-splashscreen is intentionally not used. -->
+    <plugin name="cordova-plugin-statusbar" spec="^4.0.0" />
+    <plugin name="cordova-plugin-device" spec="^3.0.0" />
+
+    <engine name="android" spec="^15.0.0" />
+    <engine name="ios" spec="^8.1.0" />
+</widget>

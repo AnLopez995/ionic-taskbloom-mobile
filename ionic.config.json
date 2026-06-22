@@ -1,7 +1,7 @@
 {
   "name": "taskbloom",
   "integrations": {
-    "capacitor": {}
+    "cordova": {}
   },
   "type": "angular"
 }
