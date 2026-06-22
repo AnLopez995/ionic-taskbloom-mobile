@@ -26,9 +26,32 @@
   }
 }
 
+.filters {
+  display: flex;
+  gap: 0.25rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.5rem;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  ion-chip {
+    flex: 0 0 auto;
+  }
+}
+
 .completed {
   text-decoration: line-through;
   opacity: 0.55;
+}
+
+.task-chip {
+  margin-inline-start: 0.5rem;
+  height: 1.25rem;
+  font-size: 0.7rem;
 }
 
 .state {

@@ -99,6 +99,17 @@ export class TaskStateService {
     this._tasks.set(await this.taskService.assignCategory(taskId, categoryId));
   }
 
+  /**
+   * Detach a category from every task that referenced it (cascade after a
+   * category is deleted) and reset the filter if that category was active.
+   */
+  async clearCategory(categoryId: string): Promise<void> {
+    this._tasks.set(await this.taskService.clearCategoryFromTasks(categoryId));
+    if (this._selectedCategoryId() === categoryId) {
+      this._selectedCategoryId.set(ALL_CATEGORIES);
+    }
+  }
+
   /** Set the active category filter (synchronous; affects `filteredTasks`). */
   setCategoryFilter(categoryId: string): void {
     this._selectedCategoryId.set(categoryId);

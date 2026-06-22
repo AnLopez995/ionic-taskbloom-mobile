@@ -6,7 +6,7 @@ import { Routes } from '@angular/router';
  *
  * - `/splash`   → animated splash, then redirects to tasks.
  * - `/tasks`    → home / task list (default).
- * - `/categories` → category management (guarded by the categories feature flag, Phase 5).
+ * - `/categories` → category management (will be guarded by the categories feature flag in Phase 7).
  */
 export const routes: Routes = [
   {
@@ -17,6 +17,13 @@ export const routes: Routes = [
     path: 'tasks',
     loadComponent: () =>
       import('./features/tasks/pages/task-list/task-list.page').then((m) => m.TaskListPage),
+  },
+  {
+    path: 'categories',
+    loadComponent: () =>
+      import('./features/categories/pages/category-list/category-list.page').then(
+        (m) => m.CategoryListPage,
+      ),
   },
   {
     path: '',

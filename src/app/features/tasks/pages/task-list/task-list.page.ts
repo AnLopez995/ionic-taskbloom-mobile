@@ -1,7 +1,11 @@
-import { ChangeDetectionStrategy, Component, inject, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import {
   AlertController,
+  IonButton,
+  IonButtons,
   IonCheckbox,
+  IonChip,
   IonContent,
   IonFab,
   IonFabButton,
@@ -21,25 +25,36 @@ import {
   ToastController,
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { addOutline, checkmarkDoneOutline, trashOutline } from 'ionicons/icons';
-import { Task } from '../../../../core/models';
+import {
+  addOutline,
+  checkmarkDoneOutline,
+  pricetagOutline,
+  pricetagsOutline,
+  trashOutline,
+} from 'ionicons/icons';
+import { ALL_CATEGORIES } from '../../../../core/constants/app.constants';
+import { Category, Task } from '../../../../core/models';
+import { CategoryStateService } from '../../../../core/services/category-state.service';
 import { TaskStateService } from '../../../../core/services/task-state.service';
 
 /**
  * Home / task list page.
  *
- * Functional baseline (Phase 4): lists tasks from the reactive store, adds via a
- * prompt, toggles completion, and deletes with confirmation — all persisted
- * locally. The premium visual layer (cards, animations, custom add sheet) lands
- * in Phase 6 and the category filter in Phase 5.
+ * Lists tasks from the reactive store with a category filter (Phase 5), adds via
+ * a prompt, toggles completion, assigns categories, and deletes with confirmation
+ * — all persisted locally. The premium visual layer (cards, animations, custom
+ * add sheet) lands in Phase 6.
  */
 @Component({
   selector: 'tb-task-list',
   standalone: true,
   imports: [
+    RouterLink,
     IonHeader,
     IonToolbar,
     IonTitle,
+    IonButtons,
+    IonButton,
     IonContent,
     IonList,
     IonItem,
@@ -48,6 +63,7 @@ import { TaskStateService } from '../../../../core/services/task-state.service';
     IonItemOption,
     IonLabel,
     IonCheckbox,
+    IonChip,
     IonIcon,
     IonFab,
     IonFabButton,
@@ -61,21 +77,38 @@ import { TaskStateService } from '../../../../core/services/task-state.service';
 })
 export class TaskListPage implements OnInit {
   private readonly store = inject(TaskStateService);
+  private readonly categoryStore = inject(CategoryStateService);
   private readonly alertCtrl = inject(AlertController);
   private readonly toastCtrl = inject(ToastController);
+
+  readonly allCategories = ALL_CATEGORIES;
 
   /** Reactive view-model surfaced to the template. */
   readonly tasks = this.store.filteredTasks;
   readonly stats = this.store.stats;
   readonly loading = this.store.loading;
   readonly isEmpty = this.store.isEmpty;
+  readonly selectedCategoryId = this.store.selectedCategoryId;
+  readonly categories = this.categoryStore.categories;
+
+  /** Fast id → category lookup so each task row can render its category chip. */
+  private readonly categoriesById = computed<Map<string, Category>>(
+    () => new Map(this.categoryStore.categories().map((category) => [category.id, category])),
+  );
 
   constructor() {
-    addIcons({ addOutline, trashOutline, checkmarkDoneOutline });
+    addIcons({
+      addOutline,
+      trashOutline,
+      checkmarkDoneOutline,
+      pricetagOutline,
+      pricetagsOutline,
+    });
   }
 
   ngOnInit(): void {
     void this.store.load();
+    void this.categoryStore.load();
   }
 
   /** Stable identity for the list to avoid re-rendering unchanged rows. */
@@ -83,11 +116,21 @@ export class TaskListPage implements OnInit {
     return task.id;
   }
 
+  /** The category assigned to a task, or undefined when uncategorized. */
+  categoryOf(task: Task): Category | undefined {
+    return task.categoryId ? this.categoriesById().get(task.categoryId) : undefined;
+  }
+
+  /** Apply a category filter from the chip row. */
+  filterBy(categoryId: string): void {
+    this.store.setCategoryFilter(categoryId);
+  }
+
   async toggle(task: Task): Promise<void> {
     await this.store.toggleCompleted(task.id);
   }
 
-  /** Prompt for a title and create a task. */
+  /** Prompt for a title and create a task (in the active category, if any). */
   async promptAdd(): Promise<void> {
     const alert = await this.alertCtrl.create({
       header: 'New task',
@@ -119,8 +162,45 @@ export class TaskListPage implements OnInit {
   }
 
   private async addTask(title: string): Promise<void> {
-    await this.store.addTask({ title });
+    // Pre-fill the active filter as the category so adding within a filtered
+    // view lands the task where the user is looking.
+    const active = this.selectedCategoryId();
+    const categoryId = active === ALL_CATEGORIES ? null : active;
+    await this.store.addTask({ title, categoryId });
     await this.showToast('Task added');
+  }
+
+  /** Radio picker to assign (or clear) a task's category. */
+  async promptAssignCategory(task: Task): Promise<void> {
+    const categories = this.categories();
+    const alert = await this.alertCtrl.create({
+      header: 'Assign category',
+      inputs: [
+        {
+          type: 'radio',
+          label: 'None',
+          value: '',
+          checked: !task.categoryId,
+        },
+        ...categories.map((category) => ({
+          type: 'radio' as const,
+          label: category.name,
+          value: category.id,
+          checked: task.categoryId === category.id,
+        })),
+      ],
+      buttons: [
+        { text: 'Cancel', role: 'cancel' },
+        {
+          text: 'Save',
+          role: 'confirm',
+          handler: (value: string) => {
+            void this.store.assignCategory(task.id, value || null);
+          },
+        },
+      ],
+    });
+    await alert.present();
   }
 
   /** Confirm, then delete. */

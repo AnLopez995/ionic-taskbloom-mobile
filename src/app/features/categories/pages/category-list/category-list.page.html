@@ -1,0 +1,57 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tasks"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Categories</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  @if (loading()) {
+    <div class="state state--loading">
+      <ion-spinner name="crescent"></ion-spinner>
+    </div>
+  } @else if (isEmpty()) {
+    <div class="state state--empty">
+      <ion-icon name="pricetags-outline" aria-hidden="true"></ion-icon>
+      <ion-text color="medium">
+        <p>No categories yet. Tap + to create one.</p>
+      </ion-text>
+    </div>
+  } @else {
+    <ion-list lines="full">
+      @for (category of categories(); track category.id) {
+        <ion-item-sliding>
+          <ion-item button (click)="promptRename(category)">
+            <span class="dot" slot="start" [style.background]="category.color"></span>
+            @if (category.icon) {
+              <ion-icon
+                slot="start"
+                [name]="category.icon"
+                [style.color]="category.color"
+                aria-hidden="true"
+              ></ion-icon>
+            }
+            <ion-label>{{ category.name }}</ion-label>
+            <ion-note slot="end">{{ taskCount(category) }}</ion-note>
+          </ion-item>
+          <ion-item-options side="end">
+            <ion-item-option color="medium" (click)="promptRename(category)">
+              <ion-icon slot="icon-only" name="create-outline"></ion-icon>
+            </ion-item-option>
+            <ion-item-option color="danger" (click)="confirmDelete(category)">
+              <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+        </ion-item-sliding>
+      }
+    </ion-list>
+  }
+
+  <ion-fab slot="fixed" vertical="bottom" horizontal="end">
+    <ion-fab-button aria-label="Add category" (click)="promptCreate()">
+      <ion-icon name="add-outline"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+</ion-content>
