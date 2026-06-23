@@ -42,7 +42,7 @@ See the demo walkthrough in [`docs/DEMO.md`](docs/DEMO.md). Drop captures into `
 
 | Splash | Home (bloom hero) | Add task | Categories |
 |---|---|---|---|
-| `docs/screenshots/splash.png` | `docs/screenshots/home.png` | `docs/screenshots/add-task.png` | `docs/screenshots/categories.png` |
+| `docs/screenshots/splash.png` | `docs/screenshots/home.png` | `docs/screenshots/newTask.png` | `docs/screenshots/categories.png` |
 
 ---
 

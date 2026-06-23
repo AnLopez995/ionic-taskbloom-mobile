@@ -37,8 +37,8 @@ Save PNGs into `docs/screenshots/` with these names (referenced by the README):
 |---|---|
 | `splash.png` | Splash / brand |
 | `home.png` | Home with bloom hero + a few tasks |
-| `add-task.png` | Add‑task bottom sheet (with category chips) |
+| `newTask.png` | Add‑task bottom sheet (with category chips) |
 | `categories.png` | Category list + the color/icon picker |
-| `flag-off.png` | Home with `categories_enabled = false` (optional) |
+| `flag-off.png` | Home with `categories_enabled = false` |
 
 Tip: capture at a 9:19.5 mobile viewport for consistent framing.
