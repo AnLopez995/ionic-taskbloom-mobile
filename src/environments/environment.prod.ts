@@ -15,6 +15,11 @@ export const environment = {
   remoteConfigDefaults: {
     categories_enabled: true,
   },
-  /** Recommended: 3600000 (1h) in production. */
-  remoteConfigFetchIntervalMs: 3600000,
+  /**
+   * 0 = fetch the latest values on every launch, so toggling the flag in the
+   * Firebase console takes effect on the next app start (required for the demo).
+   * A real production app would raise this (e.g. 3600000 = 1h) to save bandwidth,
+   * accepting that flag changes then propagate within that window.
+   */
+  remoteConfigFetchIntervalMs: 0,
 };

@@ -4,8 +4,12 @@ import { fetchAndActivate, getRemoteConfig, getValue, RemoteConfig } from 'fireb
 import { environment } from '../../../environments/environment';
 import { FeatureFlags, REMOTE_CONFIG_KEYS } from '../models';
 
-/** Max time we wait for a Remote Config fetch before falling back to defaults. */
-const FETCH_TIMEOUT_MS = 4000;
+/**
+ * Max time we wait for a Remote Config fetch before falling back to defaults.
+ * Generous enough for a cold first fetch on a real mobile network (Firebase
+ * Installations handshake + config fetch), while still bounding startup.
+ */
+const FETCH_TIMEOUT_MS = 8000;
 
 /**
  * Resolves application feature flags from Firebase Remote Config with a **safe

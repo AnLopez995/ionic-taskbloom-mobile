@@ -15,7 +15,7 @@ así una tarea puede existir sin categoría y desactivar la función no rompe na
 **b) Manejar Remote Config de forma segura.**
 La app no debe depender de Firebase para arrancar. `RemoteConfigService` parte de **valores por
 defecto locales**, omite Firebase si no hay configuración, y hace `fetchAndActivate` **contra un
-timeout de 4 s** tragándose cualquier error → siempre resuelve. El flag se expone como **signal**,
+timeout de 8 s** tragándose cualquier error → siempre resuelve. El flag se expone como **signal**,
 de modo que la UI reacciona sola y un *route guard* protege `/categories`.
 
 **c) Cumplir el requisito de Cordova** pese a estar deprecado por Ionic en favor de Capacitor: lo

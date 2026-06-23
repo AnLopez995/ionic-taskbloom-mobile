@@ -107,7 +107,7 @@ never depend on Firebase to start):
 
 - Flags start at `environment.remoteConfigDefaults` (default `categories_enabled: true`).
 - If there is **no usable Firebase config**, Firebase is skipped entirely.
-- `fetchAndActivate` is **raced against a 4s timeout**; any error is swallowed and defaults stand.
+- `fetchAndActivate` is **raced against an 8s timeout**; any error is swallowed and defaults stand.
 - The flag is exposed as a **signal**, so the UI re‑renders automatically; a route guard protects
   `/categories`.
 
@@ -220,8 +220,13 @@ npm run test:ci
 
 ## 📝 Notes & caveats
 
-- **Firebase** config ships as a placeholder; the app runs on local defaults (categories ON) and
-  exercises the fallback path on every run.
+- **Firebase / security** — the committed `firebase` block is the **web config**, which is *not* a
+  secret: the `apiKey` is a public project identifier, not a credential (Firebase embeds it in every
+  web client by design — access is governed by Security Rules and App Check, not the key). No service
+  account, `google-services.json`, or private key is in the repo. As a precaution the key is
+  **restricted in Google Cloud Console** — limited to the app's Android package / referrer and to the
+  *Remote Config* + *Installations* APIs — so an exposed copy can't be abused. The app also degrades
+  to local defaults (categories ON) if Firebase is ever unreachable.
 - **Fonts** (Sora + Inter) load from Google Fonts for the demo; self‑host them for full offline use
   in the packaged app.
 - **iOS** is configured but the `.ipa` must be produced on macOS + Xcode.
